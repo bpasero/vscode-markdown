@@ -1,0 +1,43 @@
+{
+    "name": "markdown",
+    "displayName": "markdown",
+    "description": "Markdown for VS Code",
+    "version": "0.0.1",
+    "publisher": "Microsoft",
+    "engines": {
+        "vscode": "^1.0.0"
+    },
+    "main": "./out/src/extension",
+    "categories": [
+        "Languages"
+    ],
+    "activationEvents": [
+        "onCommand:extension.previewMarkdown"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "markdown",
+            "aliases": ["Markdown", "markdown"],
+            "extensions": [".md",".mdown",".markdown",".markdn"],
+            "configuration": "./markdown.configuration.json"
+        }],
+        "grammars": [{
+            "language": "markdown",
+            "scopeName": "text.html.markdown",
+            "path": "./syntaxes/markdown.tmLanguage"
+        }],
+         "commands": [{
+            "command": "extension.previewMarkdown",
+            "title": "Markdown Preview"
+        }]
+    },
+    "scripts": {
+        "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+        "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "typescript": "^1.8.5",
+        "vscode": "^0.11.0"
+    }
+}
