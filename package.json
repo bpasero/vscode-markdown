@@ -36,6 +36,10 @@
         "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
+    "dependencies": {
+        "markdown-it": "^6.0.1",
+        "highlight.js": "^9.3.0"
+    },
     "devDependencies": {
         "typescript": "^1.8.5",
         "vscode": "^0.11.0"
