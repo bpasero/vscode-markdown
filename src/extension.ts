@@ -22,13 +22,12 @@ const md = require('markdown-it')({
 export function activate(context: vscode.ExtensionContext) {
     let registration = vscode.workspace.registerTextDocumentContentProvider('markdown', {
         provideTextDocumentContent(uri) {
-            let res = md.render(fs.readFileSync(uri.fsPath).toString());
+            const res = md.render(fs.readFileSync(uri.fsPath).toString());
 
-            let baseCss = '<style type="text/css">' + fs.readFileSync(path.join(__dirname, '..', '..', 'media', 'markdown.css')) + '</style>';
-            let codeCss = '<style type="text/css">' + fs.readFileSync(path.join(__dirname, '..', '..', 'media', 'tomorrow.css')) + '</style>';
-            res = baseCss + codeCss + res;
+            const baseCss = `<link rel="stylesheet" type="text/css" href="${path.join(__dirname, '..', '..', 'media', 'markdown.css')}" >`;
+            const codeCss = `<link rel="stylesheet" type="text/css" href="${path.join(__dirname, '..', '..', 'media', 'tomorrow.css')}" >`;
 
-            return res;
+            return baseCss + codeCss + res;
         }
     });
 
@@ -46,9 +45,7 @@ function openPreview(sideBySide?: boolean): void {
 
     let markdownPreviewUri = vscode.Uri.parse(`markdown://${activeEditor.document.uri.fsPath}`);
 
-    vscode.commands.executeCommand('vscode.previewHtml', markdownPreviewUri, getViewColumn(sideBySide)).then(success => {
-        console.log("SUCCESS");
-    });
+    vscode.commands.executeCommand('vscode.previewHtml', markdownPreviewUri, getViewColumn(sideBySide));
 }
 
 function getViewColumn(sideBySide): vscode.ViewColumn {
