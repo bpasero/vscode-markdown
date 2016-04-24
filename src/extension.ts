@@ -20,12 +20,20 @@ const md = require('markdown-it')({
 export function activate(context: vscode.ExtensionContext) {
     let registration = vscode.workspace.registerTextDocumentContentProvider('markdown', {
         provideTextDocumentContent(uri) {
-            const res = md.render(fs.readFileSync(uri.fsPath).toString());
+            return new Promise((approve, reject) => {
+                fs.readFile(uri.fsPath, (error, buffer) => {
+                    if (error) {
+                        return reject(error);
+                    }
+                    
+                    const res = md.render(buffer.toString());
 
-            const baseCss = `<link rel="stylesheet" type="text/css" href="${path.join(__dirname, '..', '..', 'media', 'markdown.css')}" >`;
-            const codeCss = `<link rel="stylesheet" type="text/css" href="${path.join(__dirname, '..', '..', 'media', 'tomorrow.css')}" >`;
+                    const baseCss = `<link rel="stylesheet" type="text/css" href="${path.join(__dirname, '..', '..', 'media', 'markdown.css')}" >`;
+                    const codeCss = `<link rel="stylesheet" type="text/css" href="${path.join(__dirname, '..', '..', 'media', 'tomorrow.css')}" >`;
 
-            return baseCss + codeCss + res;
+                    approve(baseCss + codeCss + res);
+                });
+            });
         }
     });
 
