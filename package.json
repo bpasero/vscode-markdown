@@ -48,7 +48,11 @@
                 "command": "extension.previewMarkdownSide",
                 "title": "Open Markdown Preview to the Side"
             }
-        ]
+        ],
+        "keybindings": {
+            "command": "extension.previewMarkdown",
+            "key": "F2"
+        }
     },
     "scripts": {
         "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
