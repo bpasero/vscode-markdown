@@ -4,18 +4,16 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const hljs = require('highlight.js'); // https://highlightjs.org/
+const hljs = require('highlight.js');
 const md = require('markdown-it')({
     highlight: function (str, lang) {
         if (lang && hljs.getLanguage(lang)) {
             try {
-                return '<pre class="hljs"><code>' +
-                    hljs.highlight(lang, str, true).value +
-                    '</code></pre>';
-            } catch (__) { }
+                return `<pre class="hljs"><code>${hljs.highlight(lang, str, true).value}</code></pre>`;
+            } catch (error) { }
         }
 
-        return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+        return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`;
     }
 });
 
