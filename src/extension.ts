@@ -20,31 +20,53 @@ const md = require('markdown-it')({
 });
 
 export function activate(context: vscode.ExtensionContext) {
-
     let registration = vscode.workspace.registerTextDocumentContentProvider('markdown', {
         provideTextDocumentContent(uri) {
             let res = md.render(fs.readFileSync(uri.fsPath).toString());
-            
-            let baseCss = '<style type="text/css">' + fs.readFileSync(path.join(__dirname, '..', '..', 'markdown.css')) + '</style>';
-            let codeCss = '<style type="text/css">' + fs.readFileSync(path.join(__dirname, '..', '..', 'tomorrow.css')) + '</style>';
+
+            let baseCss = '<style type="text/css">' + fs.readFileSync(path.join(__dirname, '..', '..', 'media', 'markdown.css')) + '</style>';
+            let codeCss = '<style type="text/css">' + fs.readFileSync(path.join(__dirname, '..', '..', 'media', 'tomorrow.css')) + '</style>';
             res = baseCss + codeCss + res;
-            
+
             return res;
         }
     });
 
-    let disposable = vscode.commands.registerCommand('extension.previewMarkdown', () => {
-        const activeEditor = vscode.window.activeTextEditor;
-        if (!activeEditor) {
-            return;
-        }
+    let d1 = vscode.commands.registerCommand('extension.previewMarkdown', () => openPreview());
+    let d2 = vscode.commands.registerCommand('extension.previewMarkdownSide', () => openPreview(true));
 
-        let markdownPreviewUri = vscode.Uri.parse(`markdown://${activeEditor.document.uri.fsPath}`);
+    context.subscriptions.push(d1, d2, registration);
+}
 
-        return vscode.commands.executeCommand('vscode.previewHtml', markdownPreviewUri).then(success => {
-            console.log("SUCCESS");
-        });
+function openPreview(sideBySide?: boolean): void {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (!activeEditor) {
+        return;
+    }
+
+    let markdownPreviewUri = vscode.Uri.parse(`markdown://${activeEditor.document.uri.fsPath}`);
+
+    vscode.commands.executeCommand('vscode.previewHtml', markdownPreviewUri, getViewColumn(sideBySide)).then(success => {
+        console.log("SUCCESS");
     });
+}
 
-    context.subscriptions.push(disposable, registration);
+function getViewColumn(sideBySide): vscode.ViewColumn {
+    const active = vscode.window.activeTextEditor;
+    if (!active) {
+        return vscode.ViewColumn.One;
+    }
+
+    if (!sideBySide) {
+        return active.viewColumn;
+    }
+
+    switch (active.viewColumn) {
+        case vscode.ViewColumn.One:
+            return vscode.ViewColumn.Two;
+        case vscode.ViewColumn.Two:
+            return vscode.ViewColumn.Three;
+    }
+
+    return active.viewColumn;
 }
